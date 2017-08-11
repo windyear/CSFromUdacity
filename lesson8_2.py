@@ -23,6 +23,7 @@ def daysBetweenDates(year1, month1, day1, year2, month2, day2):
     ##
     # Your code here.
     ##
+    temp_month2 = month2
     days_Of_Months = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     days_Of_Months_of_leap =  [ 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     #count the days from first year to the next year 
@@ -48,7 +49,7 @@ def daysBetweenDates(year1, month1, day1, year2, month2, day2):
         while month2 < 13:
             last_days = last_days + days_Of_Months[month2 -1]
             month2 = month2 + 1
-            last_days = 365 - last_days
+        last_days = 365 - last_days
     # count the days between the year2 and year1
     year = year1+1
     days = 0
@@ -61,8 +62,8 @@ def daysBetweenDates(year1, month1, day1, year2, month2, day2):
     days = days + first_days + last_days
     if year1 == year2 :
         if is_leap_year(year1):
-            if month2 <= 2:
-                days = days - 365
+            if temp_month2 <= 2:
+                days = days - 368
             else:
                 days = days - 366
         else:
@@ -78,6 +79,7 @@ def test():
                   ((1900,1,1,1999,12,31), 36523)]
     for (args, answer) in test_cases:
         result = daysBetweenDates(*args)
+        print result
         if result != answer:
             print "Test with data:", args, "failed"
         else:
