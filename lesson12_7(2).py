@@ -106,7 +106,7 @@ def get_all_links(page):
         else:
             break
     return links
-
+#这里采用广度优先遍历的方法，直接遍历每一层深度的所有页面，循环判断条件加入深度的判定
 def crawl_web(seed,max_depth):
     tocrawl = [seed]
     crawled = []

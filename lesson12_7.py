@@ -107,24 +107,35 @@ def get_all_links(page):
             break
     return links
 
+#想了很久的一种做法是使用一个记录每层深度链接数的列表
+#该列表的下标索引代表了深度，列表某一项的值是待爬取的该深度链接值
+#每次爬取时比较深度是否超过，该层深度爬完之后列表pop出一个项
+#这里会有一个问题，实际的网页路径组成的并不是树，而是一个图，所以这种算法会有错误
+#正确的做法是采取广度优先遍历，直接将一层深度的图遍历，然后保存好下一层的链接，接着再遍历下一层
 def crawl_web(seed,max_depth):
     tocrawl = [seed]
     crawled = []
-    next_depth = []
-    deep = 0
-    while tocrawl and deep <= max_depth:
+    depth = [1]
+    while tocrawl:
         page = tocrawl.pop()
+        previous_num = len(tocrawl)
+        depth[-1] = depth[-1] - 1
         if page not in crawled:
-            union(next_depth, get_all_links(get_page(page)))
+            if len(depth)-1 == max_depth:
+                crawled.append(page)
+                continue
+            union(tocrawl, get_all_links(get_page(page)))
+            num_of_add_tocrawl = len(tocrawl) - previous_num
+            if num_of_add_tocrawl != 0:
+                depth.append(num_of_add_tocrawl)
+            else:
+                if depth[-1] == 0:
+                    depth.pop()
             crawled.append(page)
-        if not tocrawl:
-            tocrawl, next_depth = next_depth, []
-            deep = deep + 1
     return crawled
 
 print crawl_web("http://www.udacity.com/cs101x/index.html",0)
 #>>> ['http://www.udacity.com/cs101x/index.html']
-
 print crawl_web("http://www.udacity.com/cs101x/index.html",1)
 #>>> ['http://www.udacity.com/cs101x/index.html',
 #>>> 'http://www.udacity.com/cs101x/flying.html',
